@@ -17,7 +17,6 @@ using System.Threading.Tasks;
 namespace SudokuAssessment {
     class Program {
         static void Main(string[] args) {
-
         }
     }
 }
