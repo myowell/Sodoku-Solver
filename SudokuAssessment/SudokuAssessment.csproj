@@ -41,6 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SodokuSolver.cs" />
     <Compile Include="SudokuBoard.cs" />
     <Compile Include="Program.cs" />
@@ -54,10 +59,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="puzzles\puzzle1.txt" />
-    <Content Include="puzzles\puzzle2.txt" />
-    <Content Include="puzzles\puzzle3.txt" />
-    <Content Include="puzzles\puzzle4.txt" />
-    <Content Include="puzzles\puzzle5.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
