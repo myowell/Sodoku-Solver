@@ -1,11 +1,10 @@
 ﻿/// <summary> 
-///  Entry point for the Sodoku solver application for Gavant Software.
+///  Entry point for the Sodoku solver application for Gavant Software. Handles the input and output of the puzzle and solutions files.
 /// </summary>
 /// <remarks>
 /// This program will attempt to solve each 9x9 Sudoku puzzle present in the 'puzzles' directory and represented as a .txt file.
 /// Solzed puzzles will be placed in the 'solutions' directory.
 /// Each solution file will be saved in the format of {0}.sln.txt where {0} is the name of the original puzzle file.
-/// It is assumed that each puzzle input will be 9x9.
 /// Author: Michael Yowell - michael.yowell@gmail.com
 /// </remarks>
 
@@ -30,22 +29,20 @@ namespace SudokuAssessment {
 
                 puzzleEntries = Directory.GetFiles(puzzleDirectory);
 
-                foreach(String fileName in puzzleEntries) {
-                    StreamReader puzzleStream = new StreamReader(fileName);
+                foreach(String puzzleFileName in puzzleEntries) {
 
-                    // Read all contents minus returns and newlines into the string buffer
+                    try {
+                        SudokuBoard sb = new SudokuBoard(puzzleFileName);
 
-                    while(puzzleStream.Peek() > 0){
-                        char c = (char)puzzleStream.Read();
-                        if (c != '\n' && c != '\r')
-                            charBuffer.Add(c);
+                        Console.WriteLine("Attempting to solve {0}...", puzzleFileName);
+                    } catch(Exception e) {
+                        Console.Error.WriteLine("Error in puzzle file: {0}", e.Message);
                     }
 
-                    charBuffer.ForEach(Console.WriteLine);
                 }
                 
             } catch(Exception e) {
-                Console.Error.Write("Error accessing or reading puzzle files: {0}\n", e.Message);
+                Console.Error.Write("Error accessing or reading puzzle file: {0}\n", e.Message);
             }
 
             Console.Read();

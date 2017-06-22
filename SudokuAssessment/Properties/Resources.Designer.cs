@@ -61,7 +61,7 @@ namespace SudokuAssessment.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ..\\..\\puzzles\\.
+        ///   Looks up a localized string similar to ..\..\puzzles\.
         /// </summary>
         internal static string puzzleDirectoryPath {
             get {
@@ -70,7 +70,7 @@ namespace SudokuAssessment.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ..\\..\\solutions\\.
+        ///   Looks up a localized string similar to ..\..\solutions\.
         /// </summary>
         internal static string solutionsDirectoryPath {
             get {
