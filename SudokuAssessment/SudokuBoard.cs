@@ -30,28 +30,30 @@ namespace SudokuAssessment {
         /// </summary>
         /// <param name="puzzleStream"></param>
         public SudokuBoard(String puzzleFileName) {
-            BuildPuzzleBoard(puzzleFileName);
+            BuildPuzzleBoard(ParsePuzzleContents(puzzleFileName));
         }
 
         /// <summary>
-        /// Builds a new Sudoku board using one of the files in the resource /puzzles directory
+        /// Parses and verifies the contents of a file puzzle for insertion into the game board.
         /// </summary>
         /// <remarks>
-        /// Opens a file stream for each file, loads their contents into a buffer, and fills in the actual game board.
-        /// Ensures the validity of a puzzle file's content.
+        /// Opens a StreamReader for the given file name in the puzzle directory resource.
+        /// Verifies that the puzzle file contains the correct (81) number of entries.
+        /// Verifies that the puzzle file 
         /// </remarks>
         /// <exception cref="System.ArgumentException">Throw when an input file contains a charcter other than 1-9 OR 'X'.</exception>
         /// <exception cref="System.ArgumentException">Throw when an input file contains anything other than 81 characters.</exception>
         /// <param name="puzzleFileName"></param>
-
-        private void BuildPuzzleBoard(String puzzleFileName) {
+        /// <returns>A <see cref="List{char}"> containing the file contents.</returns>
+        private List<char> ParsePuzzleContents(String puzzleFileName){
             List<char> charBuffer = new List<char>(); // Buffer to hold contents of a puzzle file
             StreamReader puzzleStream = new StreamReader(puzzleFileName); // Stream reader for the contents of a puzzle file
 
             // First load the file contents into a buffer and strip away all new line and return characters 
             // Verfies that file contents are either a single digit 1-9 or an 'X' to represent a blank space
 
-            while (!puzzleStream.EndOfStream) {
+            while (!puzzleStream.EndOfStream)
+            {
                 char c = (char)puzzleStream.Read(); // Current character read from the file stream
                 if (c != '\n' && c != '\r')
                     switch (c) {
@@ -65,10 +67,10 @@ namespace SudokuAssessment {
                         case '8':
                         case '9':
                         case 'X':
-                        charBuffer.Add(c);
-                        break;
+                            charBuffer.Add(c);
+                            break;
                         default:
-                        throw new System.ArgumentException("Invalid Character In Puzzle File", String.Concat(puzzleFileName + " - " + c));
+                            throw new System.ArgumentException("Invalid Character In Puzzle File", String.Concat(puzzleFileName + " - " + c));
                     }
             }
 
@@ -79,18 +81,26 @@ namespace SudokuAssessment {
             if (charBuffer.Count() != ROWS * COLUMNS)
                 throw new System.ArgumentException("Invalid Game Board Size", puzzleFileName);
 
-            System.Collections.IEnumerator en = charBuffer.GetEnumerator(); // Enumerator for the character buffer
+            return charBuffer;
+        }
 
-            // With the character contents of the puzzle file verified, convert them into integers and fill out the contents of game board
-            // Replace each "X" with a 0 to represent a blank space
 
+        /// <summary>
+        /// Builds a new Sudoku board using the character buffer created with the <see cfref="SudokuBoard.ParsePuzzleContents"/> function.
+        /// </summary>
+        /// <remarks>
+        /// Formats the raw character input of a puzzle file into the 9x9 <see cref="SudokuBoard.gameBoard"/>.
+        /// Buffer contents will either be parsed into their integer values or made '0' to represent a blank space.
+        /// Ensures the validity of a puzzle file's content.
+        /// </remarks>
+        /// <param name="puzzleFileName"></param>
+        private void BuildPuzzleBoard(List<char> charBuffer) {
             for (int i = 0; i < ROWS * COLUMNS; i++) {
                 int r = (i / 9 + 1) - 1; // Current Row
                 int c = (i % 9 + 1) - 1; // Current Column
     
                 gameBoard[r, c] = Char.IsNumber(charBuffer[i]) ? Int32.Parse(charBuffer[i].ToString()) : 0;
             }
-
         }
     }
 }
