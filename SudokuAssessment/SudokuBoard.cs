@@ -34,6 +34,14 @@ namespace SudokuAssessment {
         }
 
         /// <summary>
+        /// Returns the array containing the <see cref="SudokuBoard.gameBoard"/>
+        /// </summary>
+        /// <returns><see cref="SudokuBoard.gameBoard"/></returns>
+        public int[,] GetgameBoard() {
+            return this.gameBoard;
+        }
+
+        /// <summary>
         /// Parses and verifies the contents of a file puzzle for insertion into the game board.
         /// </summary>
         /// <remarks>
@@ -84,7 +92,6 @@ namespace SudokuAssessment {
             return charBuffer;
         }
 
-
         /// <summary>
         /// Builds a new Sudoku board using the character buffer created with the <see cfref="SudokuBoard.ParsePuzzleContents"/> function.
         /// </summary>
@@ -100,6 +107,26 @@ namespace SudokuAssessment {
                 int c = (i % 9 + 1) - 1; // Current Column
     
                 gameBoard[r, c] = Char.IsNumber(charBuffer[i]) ? Int32.Parse(charBuffer[i].ToString()) : 0;
+            }
+        }
+
+        /// <summary>
+        /// Writes a <see cref="SudokuBoard.gameBoard"/> to a solution file.
+        /// </summary>
+        /// <param name="solutionsDirectory"></param>
+        /// <param name="puzzleFileName"></param>
+        public void WriteSolutionFile(string solutionsDirectory, string puzzleFileName) {
+            string solutionFileExtension = ".sln.txt"; // File extenstion for a solution file.
+            var fileName = puzzleFileName.Split('\\')[3]; // File name with the directory path removed
+            string solutionFileName = solutionsDirectory + fileName.Split('.')[0] + solutionFileExtension; // Complete solution file name with the solutions directory path and extenstion
+
+            StreamWriter solutionWriter = new StreamWriter(solutionFileName); // File stream write for the solution file
+
+            for(int i = 0; i < ROWS; i++) {
+                for(int j = 0; j < COLUMNS; j++){
+                    solutionWriter.Write(gameBoard[i, j]);
+                }
+                solutionWriter.Write(Environment.NewLine);
             }
         }
     }
