@@ -1,5 +1,6 @@
 ﻿/// <summary>
 /// This class represents a Sudoku gameboard for the Sodouku solver main function.
+/// Contains the actual game board as well as functions for its creation and output.
 /// </summary>
 
 using System;
@@ -12,8 +13,8 @@ using System.Threading.Tasks;
 
 namespace SudokuAssessment {
     public class SudokuBoard {
-        private static int ROWS = 9;  // Number of rows in a Sudoku board
-        private static int COLUMNS = 9; // Number of columns in a Sudoku board
+        public static int ROWS = 9;  // Number of rows in a Sudoku board
+        public static int COLUMNS = 9; // Number of columns in a Sudoku board
 
         private int[,] gameBoard = new int[ROWS, COLUMNS]; // Two dimensional array that will hold each value on the given Sudoku puzzle
 
@@ -34,11 +35,15 @@ namespace SudokuAssessment {
         }
 
         /// <summary>
-        /// Returns the array containing the <see cref="SudokuBoard.gameBoard"/>
+        /// Returns the array containing the <see cref="SudokuBoard.gameBoard"/>.
         /// </summary>
         /// <returns><see cref="SudokuBoard.gameBoard"/></returns>
         public int[,] GetgameBoard() {
             return this.gameBoard;
+        }
+
+        public void SetgameBoard(int[,] gameBoard) {
+            this.gameBoard = gameBoard;
         }
 
         /// <summary>
@@ -60,8 +65,7 @@ namespace SudokuAssessment {
             // First load the file contents into a buffer and strip away all new line and return characters 
             // Verfies that file contents are either a single digit 1-9 or an 'X' to represent a blank space
 
-            while (!puzzleStream.EndOfStream)
-            {
+            while (!puzzleStream.EndOfStream){
                 char c = (char)puzzleStream.Read(); // Current character read from the file stream
                 if (c != '\n' && c != '\r')
                     switch (c) {
@@ -81,7 +85,6 @@ namespace SudokuAssessment {
                             throw new System.ArgumentException("Invalid Character In Puzzle File", String.Concat(puzzleFileName + " - " + c));
                     }
             }
-
             puzzleStream.Close();
 
             // The board's dimensions must be 9x9
@@ -128,6 +131,7 @@ namespace SudokuAssessment {
                 }
                 solutionWriter.Write(Environment.NewLine);
             }
+            solutionWriter.Close();
         }
     }
 }
