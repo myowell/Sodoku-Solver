@@ -30,25 +30,28 @@ namespace SudokuAssessment {
 
                 foreach(String puzzleFileName in puzzleEntries) {
                     try {
-                        Console.WriteLine("Attempting to solve {0}...", puzzleFileName);
 
-                       SudokuSolver ss = new SudokuSolver(new SudokuBoard(puzzleFileName));
-                       var task = Task.Run(() => ss.Solve(ref solveReturn));
+                        String puzzleTextFileName = Path.GetFileName(puzzleFileName); // Puzzle file name with path removed for console output
+
+                        Console.WriteLine("Attempting to solve {0}...", puzzleTextFileName);
+
+                        SudokuSolver ss = new SudokuSolver(new SudokuBoard(puzzleFileName));
+                        var task = Task.Run(() => ss.Solve(ref solveReturn));
 
                         // Give the SudokuSolver 30 seconds to solve each puzzle
                         // If an attempted solve is taking too long, abort the attempt
 
                         if (! task.Wait(TimeSpan.FromSeconds(30))){
-                            Console.WriteLine("Attempt to solve {0} taking too long, abandoning attempt...", puzzleFileName);
+                            Console.WriteLine("Attempt to solve {0} taking too long, abandoning attempt...", puzzleTextFileName);
                         } else if (solveReturn) {
                             Console.WriteLine("Sudoku puzzle solved! Writing solution to solutions folder...\n");
                             ss.GetSolvedSudokuBoard().WriteSolutionFile(solutionsDirectory, puzzleFileName);
                         }                        
                         else
-                           Console.WriteLine("Could not find a solution for {0}\n", puzzleFileName);
+                           Console.WriteLine("Could not find a solution for {0}\n", puzzleTextFileName);
                         
                     } catch(Exception e) {
-                        Console.Error.WriteLine("Error in puzzle file {0}: {1}\n", puzzleFileName, e.Message);
+                        Console.Error.WriteLine("Error in puzzle file: {0}\n", e.Message);
                     }
 
                 }

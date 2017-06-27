@@ -15,21 +15,22 @@ namespace SudokuAssessment {
     public class SudokuBoard {
         public static int ROWS = 9;  // Number of rows in a Sudoku board
         public static int COLUMNS = 9; // Number of columns in a Sudoku board
+        public static int SQUARES = 9; // Number of squares in a Sudoku board
 
         private int[,] gameBoard = new int[ROWS, COLUMNS]; // Two dimensional array that will hold each value on the given Sudoku puzzle
 
         /// <summary>
-        /// Default constructor for SudokuBoard
+        /// Default constructor for SudokuBoard.
         /// </summary>
         /// <remarks>
-        /// Made private to prevent the invalid creation of an empty board
+        /// Made private to prevent the invalid creation of an empty board.
         /// </remarks>
         private SudokuBoard() { }
 
         /// <summary>
-        /// Class constructor for SudokuBoard
+        /// Class constructor for SudokuBoard.
         /// </summary>
-        /// <param name="puzzleStream"></param>
+        /// <param name="puzzleFileName">A name and path of a puzzle file</param>
         public SudokuBoard(String puzzleFileName) {
             BuildPuzzleBoard(ParsePuzzleContents(puzzleFileName));
         }
@@ -40,10 +41,6 @@ namespace SudokuAssessment {
         /// <returns><see cref="SudokuBoard.gameBoard"/></returns>
         public int[,] GetgameBoard() {
             return this.gameBoard;
-        }
-
-        public void SetgameBoard(int[,] gameBoard) {
-            this.gameBoard = gameBoard;
         }
 
         /// <summary>
@@ -103,7 +100,7 @@ namespace SudokuAssessment {
         /// Buffer contents will either be parsed into their integer values or made '0' to represent a blank space.
         /// Ensures the validity of a puzzle file's content.
         /// </remarks>
-        /// <param name="puzzleFileName"></param>
+        /// <param name="charBuffer">A buffer containing the contents of a puzzle file</param>
         private void BuildPuzzleBoard(List<char> charBuffer) {
             for (int i = 0; i < ROWS * COLUMNS; i++) {
                 int r = (i / 9 + 1) - 1; // Current Row
@@ -116,8 +113,8 @@ namespace SudokuAssessment {
         /// <summary>
         /// Writes a <see cref="SudokuBoard.gameBoard"/> to a solution file.
         /// </summary>
-        /// <param name="solutionsDirectory"></param>
-        /// <param name="puzzleFileName"></param>
+        /// <param name="solutionsDirectory">The path to the solutions directory.</param>
+        /// <param name="puzzleFileName">The path and name of a puzzle file.</param>
         public void WriteSolutionFile(string solutionsDirectory, string puzzleFileName) {
             string solutionFileExtension = ".sln.txt"; // File extenstion for a solution file.
             var fileName = puzzleFileName.Split('\\')[3]; // File name with the directory path removed

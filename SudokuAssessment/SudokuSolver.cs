@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 namespace SudokuAssessment {
     class SudokuSolver {
 
-        private SudokuBoard sudokuBoard; // The Sudoku board that the Sudoku solver will attempt to solve.
         private const int BLANK = 0; // The number representing a blank space
+        private SudokuBoard sudokuBoard; // The Sudoku board that the Sudoku solver will attempt to solve.        
 
         /// <summary>
         /// Default constructor for SudokuSolver.
@@ -44,8 +44,14 @@ namespace SudokuAssessment {
         /// <remarks>
         /// Public version of the overloaded <see cref="SudokuSolver.Solve(SudokuBoard)"/> function.
         /// </remarks>
-        /// <param name="ret"> A pointer to a boolean value that will contain the result of an attempt to solve a Sudoku puzzle.</param>
+        /// <param name="ret"> A pointer to a boolean value that will contain the final result of an attempt to solve a Sudoku puzzle.</param>
         public void Solve(ref bool ret) {
+
+            if (!validateBoard()){
+                ret = false;
+                return;
+            }
+
             ret = Solve(this.sudokuBoard);
         }
 
@@ -73,13 +79,13 @@ namespace SudokuAssessment {
             if (!CheckBlankSpaces(sb, ref row, ref column))
                 return true;
 
-            // For values 1-9
+            // For potential values 1-9
 
             for(int i = 1; i <= SudokuBoard.ROWS; i++) {
-                
-                // If the given value is not present in the row, column, and 9x9 square set the current blank space to its value
 
-                if (!CheckRow(i, row) && !CheckColumn(i, column) && !CheckSquare(i, row, column)){
+                // If the given value is not present in the row, column, and 9x9 square set the current blank space to it
+
+                if (!CheckRow(i, row) && !CheckColumn(i, column) && !CheckSquare(i, row, column)) {
                     sb.GetgameBoard()[row, column] = i;
 
                     // If each subsequent recursive call returns true, the board is solved
@@ -90,14 +96,58 @@ namespace SudokuAssessment {
                     // If the value not viable in the solution set the space to blank once more
 
                     sb.GetgameBoard()[row, column] = BLANK;
-                }
+                }              
             }
 
-            // Return false to reset a blank space in the event of an invalid solution attempt
+            // Return false to discard a board in the case of a failed solution attempt
 
             return false;
         }
 
+        /// <summary>
+        /// Validates a <see cref="SudokuBoard.gameBoard"/>. 
+        /// </summary>
+        /// <remarks>
+        /// Check that there are no duplicate entries in a row, column, or square of a  <see cref="SudokuBoard.gameBoard"/> before attempting to solve.
+        /// </remarks>
+        /// <returns>
+        /// False if a board is found to be invalid.
+        /// True is no invalid entries are found.
+        /// </returns>
+        public bool validateBoard() {
+            List<HashSet<int>> rows = new List<HashSet<int>>(); // A list of hash sets for each row
+            List<HashSet<int>> columns = new List<HashSet<int>>(); // A list of hash sets for each column
+            List<HashSet<int>> squares = new List<HashSet<int>>(); // A list of hash sets for each square
+            int square; // The current sqaure containing a value
+            int value; // The value being evaluated
+
+            // Initialize each hash set in each list
+
+            for (int i = 0; i < SudokuBoard.ROWS; i++){
+                rows.Add(new HashSet<int>());
+                columns.Add(new HashSet<int>());
+                squares.Add(new HashSet<int>());
+             }
+
+            // Check each space in the board once
+
+            for (int i = 0; i < SudokuBoard.ROWS; i++)
+                for(int j = 0; j < SudokuBoard.COLUMNS; j++) {                  
+
+                    value = sudokuBoard.GetgameBoard()[i, j];
+
+                    if (value != BLANK) {
+                        square = (i / 3) + (j / 3) * 3; // Get the value's current square
+
+                        // If a number fails to be added to a hashset then a duplicate was found
+
+                        if (!rows[i].Add(value) || !columns[j].Add(value) || !squares[square].Add(value))
+                            return false;
+                    }
+                }
+
+            return true;
+        }
 
         /// <summary>
         /// Check a <see cref="SudokuBoard"/> for any blank spaces.
@@ -139,7 +189,7 @@ namespace SudokuAssessment {
         /// <summary>
         /// Checks a Sudokuboard to see if a duplicate value already exists in the current row.
         /// </summary>
-        /// <param name="value">The value being searched for</param>
+        /// <param name="value">The value being searched for.</param>
         /// <param name="row">The row index of the value being searched for.</param>
         /// <param name="column">The column index of the value being searched for.</param>
         /// <returns>True if duplicate value found. False if no duplicate value found.</returns>       
