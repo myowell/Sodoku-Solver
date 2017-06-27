@@ -29,15 +29,17 @@ namespace SudokuAssessment {
 
                 foreach(String puzzleFileName in puzzleEntries) {
                     try {
-                        SudokuBoard sb = new SudokuBoard(puzzleFileName);
-
-                        SudokuSolver ss = new SudokuSolver(sb);
-
-                        ss.Solve();
-
-                        ss.gGtSudokuBoard().WriteSolutionFile(solutionsDirectory, puzzleFileName);
-
                         Console.WriteLine("Attempting to solve {0}...", puzzleFileName);
+
+                        SudokuSolver ss = new SudokuSolver(new SudokuBoard(puzzleFileName));
+                        
+                        if (ss.Solve()){
+                            Console.WriteLine("Sudoku puzzle solved! Writing to solutions folder...");
+                            ss.GetSolvedSudokuBoard().WriteSolutionFile(solutionsDirectory, puzzleFileName);  
+                        }
+                        else
+                           Console.WriteLine("Could not find a solution for {0}", puzzleFileName);
+                        
                     } catch(Exception e) {
                         Console.Error.WriteLine("Error in puzzle file: {0}", e.Message);
                     }
@@ -48,6 +50,7 @@ namespace SudokuAssessment {
                 Console.Error.Write("Error accessing or reading puzzle file: {0}\n", e.Message);
             }
 
+            Console.Write("No more puzzles to solve, press any key to exit...\n");
             Console.Read();
         }
     }
