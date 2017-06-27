@@ -21,6 +21,7 @@ namespace SudokuAssessment {
             String puzzleDirectory = Properties.Resources.puzzleDirectoryPath; // Name of the directory that holds each Sudoku puzzle
             String solutionsDirectory = Properties.Resources.solutionsDirectoryPath; // Name of the directory that will hold each solution file
             String[] puzzleEntries; // Listing of file names found in the puzzle directory
+            bool solveReturn = false; // Return value from an attempt so solve a puzzle
 
             try {
                 // Load the name of each file in the puzzles directory
@@ -31,17 +32,23 @@ namespace SudokuAssessment {
                     try {
                         Console.WriteLine("Attempting to solve {0}...", puzzleFileName);
 
-                        SudokuSolver ss = new SudokuSolver(new SudokuBoard(puzzleFileName));
-                        
-                        if (ss.Solve()){
-                            Console.WriteLine("Sudoku puzzle solved! Writing to solutions folder...");
-                            ss.GetSolvedSudokuBoard().WriteSolutionFile(solutionsDirectory, puzzleFileName);  
-                        }
+                       SudokuSolver ss = new SudokuSolver(new SudokuBoard(puzzleFileName));
+                       var task = Task.Run(() => ss.Solve(ref solveReturn));
+
+                        // Give the SudokuSolver 30 seconds to solve each puzzle
+                        // If an attempted solve is taking too long, abort the attempt
+
+                        if (! task.Wait(TimeSpan.FromSeconds(30))){
+                            Console.WriteLine("Attempt to solve {0} taking too long, abandoning attempt...", puzzleFileName);
+                        } else if (solveReturn) {
+                            Console.WriteLine("Sudoku puzzle solved! Writing solution to solutions folder...\n");
+                            ss.GetSolvedSudokuBoard().WriteSolutionFile(solutionsDirectory, puzzleFileName);
+                        }                        
                         else
-                           Console.WriteLine("Could not find a solution for {0}", puzzleFileName);
+                           Console.WriteLine("Could not find a solution for {0}\n", puzzleFileName);
                         
                     } catch(Exception e) {
-                        Console.Error.WriteLine("Error in puzzle file: {0}", e.Message);
+                        Console.Error.WriteLine("Error in puzzle file {0}: {1}\n", puzzleFileName, e.Message);
                     }
 
                 }

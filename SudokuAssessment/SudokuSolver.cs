@@ -44,11 +44,9 @@ namespace SudokuAssessment {
         /// <remarks>
         /// Public version of the overloaded <see cref="SudokuSolver.Solve(SudokuBoard)"/> function.
         /// </remarks>
-        /// <returns>
-        /// The boolean result of invoking <see cref="SudokuSolver.Solve(SudokuBoard)"/> with the instance of <see cref="SudokuSolver"/>.
-        /// </returns>
-        public bool Solve() {
-            return Solve(this.sudokuBoard);
+        /// <param name="ret"> A pointer to a boolean value that will contain the result of an attempt to solve a Sudoku puzzle.</param>
+        public void Solve(ref bool ret) {
+            ret = Solve(this.sudokuBoard);
         }
 
         /// <summary>
@@ -132,7 +130,7 @@ namespace SudokuAssessment {
             
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
-                    if (sudokuBoard.GetgameBoard()[row - startingRow, column - startingColumn] == value)
+                    if (sudokuBoard.GetgameBoard()[i + startingRow, j + startingColumn] == value)
                         return true;
 
             return false;
